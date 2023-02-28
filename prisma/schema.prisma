@@ -11,28 +11,23 @@ model User {
   uid String @id
 }
 
-model Slot {
-  id       Int       @id @default(autoincrement())
-  s        DateTime?
-  e        DateTime?
-  duration Float
-}
-
 model Timeblock {
   id       Int       @id @default(autoincrement())
   name     String
   type     String
   mode     String
-  slots    String[]
+  s        DateTime?
+  e        DateTime?
+  duration Float
   reminder DateTime?
   status   Boolean
-  project  String?
+  project  Int?
 }
 
 model Project {
   id         Int      @id @default(autoincrement())
   name       String
-  timeblocks String[]
+  timeblocks Int[]
   duration   Float
   due        DateTime
   status     String
@@ -41,5 +36,5 @@ model Project {
 model Venture {
   id       Int      @id @default(autoincrement())
   name     String
-  projects String[]
+  projects Int[]
 }
