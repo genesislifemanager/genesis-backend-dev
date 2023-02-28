@@ -17,11 +17,11 @@ model Timeblock {
   type     String
   mode     String
   s        DateTime?
+  duration Json
   e        DateTime?
-  duration Float
+  project  Int?
   reminder DateTime?
   status   Boolean
-  project  Int?
 }
 
 model Project {
@@ -34,7 +34,7 @@ model Project {
 }
 
 model Venture {
-  id       Int      @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
   projects Int[]
 }
