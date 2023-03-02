@@ -3,12 +3,13 @@ import express, { Request, Response } from "express";
 import userRouter from "./routers/userRouter";
 import timeblockRouter from "./routers/timeblockRouter";
 import { Prisma, PrismaClient } from "@prisma/client";
+const cors  = require("cors");
 export const prisma = new PrismaClient();
-
 
 const app = express();
 
 //! Global Midlleware
+app.use(cors());
 app.use(express.json());
 
 //! Mount Routers
