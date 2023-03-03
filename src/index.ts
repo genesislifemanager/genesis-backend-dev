@@ -20,6 +20,8 @@ app.use("/api/timeblocks", timeblockRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/ventures", ventureRouter);
 
+const port = process.env.PORT || 5174
+
 const server = app.listen(5174, () =>
   console.log(`
 🚀 Server ready at: http://localhost:5174`)
