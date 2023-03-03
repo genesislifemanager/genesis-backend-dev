@@ -21,8 +21,6 @@ export const createVenture = async (req: Request, res: Response) => {
     },
   });
 
-  console.log(newVenture);
-
   res.status(201).json({
     status: "success",
     newVenture: newVenture,

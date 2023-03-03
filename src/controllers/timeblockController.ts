@@ -45,7 +45,6 @@ export const getTimeblockById = async (req: Request, res: Response) => {
       id: parseInt(id, 10),
     },
   });
-  console.log(timeblock);
 
   res.status(200).json({
     status: "success",
@@ -55,7 +54,6 @@ export const getTimeblockById = async (req: Request, res: Response) => {
 
 export const updateTimeblockById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(id);
 
   const { name, type, mode, s, duration, project, reminder } = req.body;
 
@@ -108,10 +106,8 @@ export const getTimeBlocksByDate = async (req: Request, res: Response) => {
     .minute(0)
     .second(0)
     .millisecond(0);
-  console.log(selectedDate);
-
+  
   const nextDate = selectedDate.add(1,'day');
-  console.log(nextDate);
   
   const timeblocksForDate = await prisma.timeblock.findMany({
     where: {

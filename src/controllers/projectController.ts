@@ -24,8 +24,6 @@ export const createProject = async (req: Request, res: Response) => {
     },
   });
 
-  console.log(newProject);
-
   res.status(201).json({
     status: "success",
     data: newProject,

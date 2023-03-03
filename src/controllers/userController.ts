@@ -13,8 +13,6 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { uid } = req.body;
 
-  console.log(uid);
-  
   const newUser = await prisma.user.create({
     data: {
       uid:uid
