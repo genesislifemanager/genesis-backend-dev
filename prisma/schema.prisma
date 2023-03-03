@@ -28,7 +28,7 @@ model Project {
   id         Int      @id @default(autoincrement())
   name       String
   timeblocks Int[]
-  duration   Float
+  duration   Json
   due        DateTime
   status     String
 }
