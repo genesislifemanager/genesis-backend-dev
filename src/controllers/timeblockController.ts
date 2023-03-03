@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../index";
+import dayjs from "dayjs";
 
 export const getAllTimeBlocks = async (req: Request, res: Response) => {
   const timeblocks = await prisma.timeblock.findMany();
@@ -13,21 +14,17 @@ export const getAllTimeBlocks = async (req: Request, res: Response) => {
 export const createTimeblock = async (req: Request, res: Response) => {
   const { name, type, mode, s, duration, project, reminder } = req.body;
 
-  const stime = new Date(s);
-  const etime = new Date(
-    stime.getTime() + duration.h * 60 * 60 * 1000 + duration.m * 60 * 1000
-  );
-
-  console.log({ name, type, mode, stime, duration, etime, project, reminder });
+  const stime = dayjs(s);
+  const etime = stime.add(duration.h, "h").add(duration.m, "m");
 
   const newTimeblock = await prisma.timeblock.create({
     data: {
       name: name,
       type: type,
       mode: mode,
-      s: stime,
+      s: stime.toDate(),
       duration: duration,
-      e: etime,
+      e: etime.toDate(),
       project: project,
       reminder: reminder,
       status: false,
@@ -48,6 +45,7 @@ export const getTimeblockById = async (req: Request, res: Response) => {
       id: parseInt(id, 10),
     },
   });
+  console.log(timeblock);
 
   res.status(200).json({
     status: "success",
@@ -61,10 +59,8 @@ export const updateTimeblockById = async (req: Request, res: Response) => {
 
   const { name, type, mode, s, duration, project, reminder } = req.body;
 
-  const stime = new Date(s);
-  const etime = new Date(
-    stime.getTime() + duration.h * 60 * 60 * 1000 + duration.m * 60 * 1000
-  );
+  const stime = dayjs(s);
+  const etime = stime.add(duration.h, "h").add(duration.m, "m");
 
   const updatedTimeblock = await prisma.timeblock.update({
     where: {
@@ -74,9 +70,9 @@ export const updateTimeblockById = async (req: Request, res: Response) => {
       name: name,
       type: type,
       mode: mode,
-      s: stime,
+      s: stime.toDate(),
       duration: duration,
-      e: etime,
+      e: etime.toDate(),
       project: project,
       reminder: reminder,
       status: false,
@@ -107,21 +103,21 @@ export const deleteTimeblockById = async (req: Request, res: Response) => {
 export const getTimeBlocksByDate = async (req: Request, res: Response) => {
   const { date } = req.params;
 
-  const selectedDate = new Date(JSON.parse(date));
+  const selectedDate = dayjs(JSON.parse(date))
+    .hour(0)
+    .minute(0)
+    .second(0)
+    .millisecond(0);
+  console.log(selectedDate);
 
-  selectedDate.setHours(0);
-  selectedDate.setMinutes(0);
-  selectedDate.setSeconds(0);
-  const selectedDateTimestamp = selectedDate.getTime();
-  const nextDateTimestamp = selectedDateTimestamp + 24 * 60 * 60 * 1000;
-
-  const nextDate = new Date(nextDateTimestamp);
-
+  const nextDate = selectedDate.add(1,'day');
+  console.log(nextDate);
+  
   const timeblocksForDate = await prisma.timeblock.findMany({
     where: {
       s: {
-        lt: nextDate,
-        gt: selectedDate,
+        lt: nextDate.toDate(),
+        gt: selectedDate.toDate(),
       },
     },
   });
