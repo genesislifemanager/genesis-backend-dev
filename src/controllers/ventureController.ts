@@ -1,0 +1,80 @@
+import { Request, Response } from "express";
+import { prisma } from "../index";
+import dayjs from "dayjs";
+
+export const getAllVentures = async (req: Request, res: Response) => {
+  const ventures = await prisma.venture.findMany();
+
+  res.status(200).json({
+    status: "success",
+    ventures: ventures,
+  });
+};
+
+export const createVenture = async (req: Request, res: Response) => {
+  const { name, projects } = req.body;
+
+  const newVenture = await prisma.venture.create({
+    data: {
+      name,
+      projects,
+    },
+  });
+
+  console.log(newVenture);
+
+  res.status(201).json({
+    status: "success",
+    newVenture: newVenture,
+  });
+};
+
+export const getVentureById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const venture = await prisma.venture.findFirst({
+    where: {
+      id: parseInt(id, 10),
+    },
+  });
+
+  res.status(200).json({
+    status: "success",
+    venture: venture,
+  });
+};
+
+export const updateVentureById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, projects } = req.body;
+
+  const updatedVenture = await prisma.venture.update({
+    where: {
+      id: parseInt(id, 10),
+    },
+    data: {
+      name,
+      projects,
+    },
+  });
+
+  res.status(200).json({
+    status: "success",
+    updatedVenture: updatedVenture,
+  });
+};
+
+  export const deleteVentureById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const deletedVenture = await prisma.venture.delete({
+      where: {
+        id: parseInt(id, 10),
+      },
+    });
+
+    res.status(204).json({
+      status: "success",
+      deletedVenture: deletedVenture,
+    });
+  };
