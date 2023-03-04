@@ -3,7 +3,7 @@ import { prisma } from "../index";
 import dayjs from "dayjs";
 
 export const getAllProjects = async (req: Request, res: Response) => {
-  const projects = await prisma.project.findMany();
+  const projects = await prisma.project.findMany({});
 
   res.status(200).json({
     status: "success",
@@ -12,18 +12,16 @@ export const getAllProjects = async (req: Request, res: Response) => {
 };
 
 export const createProject = async (req: Request, res: Response) => {
-  const { name, status, due, duration, timeblocks } = req.body;
+  const { name, status, due, duration } = req.body;
 
   const newProject = await prisma.project.create({
     data: {
       name,
-      timeblocks,
       duration,
       due: dayjs(due).toDate(),
       status,
     },
   });
-
   res.status(201).json({
     status: "success",
     data: newProject,
@@ -31,55 +29,53 @@ export const createProject = async (req: Request, res: Response) => {
 };
 
 export const getProjectById = async (req: Request, res: Response) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   const project = await prisma.project.findFirst({
-    where:{
+    where: {
       id: parseInt(id, 10),
-    }
-  })
+    },
+  });
 
   res.status(200).json({
     status: "success",
     project: project,
   });
-}
+};
 
 export const updateProjectById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { name, status, due, duration, timeblocks } = req.body;
-  
-  
-    const updatedProject = await prisma.project.update({
-      where: {
-        id: parseInt(id, 10),
-      },
-      data: {
-        name,
-        timeblocks,
-        duration,
-        due: dayjs(due).toDate(),
-        status,
-      },
-    });
-  
-    res.status(200).json({
-      status: "success",
-      updatedProject: updatedProject,
-    });
-  };
+  const { id } = req.params;
+  const { name, status, due, duration } = req.body;
 
-  export const deleteProjectById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-  
-    const deletedProject = await prisma.project.delete({
-      where: {
-        id: parseInt(id, 10),
-      },
-    });
-  
-    res.status(204).json({
-      status: "success",
-      deletedProject: deletedProject,
-    });
-  };
+  const updatedProject = await prisma.project.update({
+    where: {
+      id: parseInt(id, 10),
+    },
+    data: {
+      name,
+      duration,
+      due: dayjs(due).toDate(),
+      status,
+    },
+  });
+
+  res.status(200).json({
+    status: "success",
+    updatedProject: updatedProject,
+  });
+};
+
+export const deleteProjectById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const deletedProject = await prisma.project.delete({
+    where: {
+      id: parseInt(id, 10),
+    },
+  });
+
+  res.status(204).json({
+    status: "success",
+    deletedProject: deletedProject,
+  });
+};

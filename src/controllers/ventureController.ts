@@ -12,12 +12,11 @@ export const getAllVentures = async (req: Request, res: Response) => {
 };
 
 export const createVenture = async (req: Request, res: Response) => {
-  const { name, projects } = req.body;
+  const { name } = req.body;
 
   const newVenture = await prisma.venture.create({
     data: {
       name,
-      projects,
     },
   });
 
@@ -44,7 +43,7 @@ export const getVentureById = async (req: Request, res: Response) => {
 
 export const updateVentureById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, projects } = req.body;
+  const { name} = req.body;
 
   const updatedVenture = await prisma.venture.update({
     where: {
@@ -52,7 +51,6 @@ export const updateVentureById = async (req: Request, res: Response) => {
     },
     data: {
       name,
-      projects,
     },
   });
 

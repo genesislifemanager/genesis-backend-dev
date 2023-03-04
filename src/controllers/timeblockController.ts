@@ -12,7 +12,7 @@ export const getAllTimeBlocks = async (req: Request, res: Response) => {
 };
 
 export const createTimeblock = async (req: Request, res: Response) => {
-  const { name, type, mode, s, duration, project, reminder } = req.body;
+  const { name, type, mode, s, duration, projectId, reminder } = req.body;
 
   const stime = dayjs(s);
   const etime = stime.add(duration.h, "h").add(duration.m, "m");
@@ -25,7 +25,7 @@ export const createTimeblock = async (req: Request, res: Response) => {
       s: stime.toDate(),
       duration: duration,
       e: etime.toDate(),
-      project: project,
+      projectId: projectId,
       reminder: reminder,
       status: false,
     },
@@ -55,7 +55,7 @@ export const getTimeblockById = async (req: Request, res: Response) => {
 export const updateTimeblockById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const { name, type, mode, s, duration, project, reminder } = req.body;
+  const { name, type, mode, s, duration, projectId, reminder } = req.body;
 
   const stime = dayjs(s);
   const etime = stime.add(duration.h, "h").add(duration.m, "m");
@@ -71,7 +71,7 @@ export const updateTimeblockById = async (req: Request, res: Response) => {
       s: stime.toDate(),
       duration: duration,
       e: etime.toDate(),
-      project: project,
+      projectId: projectId,
       reminder: reminder,
       status: false,
     },
@@ -107,7 +107,7 @@ export const getTimeBlocksByDate = async (req: Request, res: Response) => {
     .second(0)
     .millisecond(0);
   
-  const nextDate = selectedDate.add(1,'day');
+  const nextDate  = selectedDate.add(1,'day');
   
   const timeblocksForDate = await prisma.timeblock.findMany({
     where: {
