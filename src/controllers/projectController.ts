@@ -3,7 +3,7 @@ import { prisma } from "../index";
 import dayjs from "dayjs";
 
 export const getAllProjects = async (req: Request, res: Response) => {
-  const projects = await prisma.project.findMany({});
+  const projects = await prisma.project.findMany();
 
   res.status(200).json({
     status: "success",
@@ -20,6 +20,7 @@ export const createProject = async (req: Request, res: Response) => {
       duration,
       due: dayjs(due).toDate(),
       status,
+      ventureId:-1,
     },
   });
   res.status(201).json({
