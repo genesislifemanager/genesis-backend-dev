@@ -3,7 +3,16 @@ import { prisma } from "../index";
 import dayjs from "dayjs";
 
 export const getAllVentures = async (req: Request, res: Response) => {
-  const ventures = await prisma.venture.findMany();
+  const ventures = await prisma.venture.findMany({
+    include:{
+      projects:{
+        select:{
+          id:true,
+          name:true
+        }
+      }
+    }
+  });
 
   res.status(200).json({
     status: "success",
@@ -33,6 +42,14 @@ export const getVentureById = async (req: Request, res: Response) => {
     where: {
       id: parseInt(id, 10),
     },
+    include:{
+      projects:{
+        select:{
+          id:true,
+          name:true
+        } 
+      }
+    }
   });
 
   res.status(200).json({
