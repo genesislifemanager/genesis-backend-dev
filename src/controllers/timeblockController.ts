@@ -27,7 +27,7 @@ export const createTimeblock = async (req: Request, res: Response) => {
       e: etime.toDate(),
       projectId: projectId,
       reminder: reminder,
-      status: false,
+      status: 'open',
     },
   });
 
@@ -55,7 +55,7 @@ export const getTimeblockById = async (req: Request, res: Response) => {
 export const updateTimeblockById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const { name, type, mode, s, duration, projectId, reminder } = req.body;
+  const { name, type, mode, s, duration, projectId, reminder,status } = req.body;
 
   const stime = dayjs(s);
   const etime = stime.add(duration.h, "h").add(duration.m, "m");
@@ -73,7 +73,7 @@ export const updateTimeblockById = async (req: Request, res: Response) => {
       e: etime.toDate(),
       projectId: projectId,
       reminder: reminder,
-      status: false,
+      status: status,
     },
   });
 
@@ -85,6 +85,7 @@ export const updateTimeblockById = async (req: Request, res: Response) => {
 
 export const deleteTimeblockById = async (req: Request, res: Response) => {
   const { id } = req.params;
+  
 
   const deletedTimeblock = await prisma.timeblock.delete({
     where: {
@@ -100,6 +101,9 @@ export const deleteTimeblockById = async (req: Request, res: Response) => {
 
 export const getTimeBlocksByDate = async (req: Request, res: Response) => {
   const { date } = req.params;
+  console.log(req.query);
+  const {status} = req.query as {status:string};
+
 
   const selectedDate = dayjs(JSON.parse(date))
     .hour(0)
@@ -115,7 +119,11 @@ export const getTimeBlocksByDate = async (req: Request, res: Response) => {
         lt: nextDate.toDate(),
         gt: selectedDate.toDate(),
       },
+      status: status,
     },
+    orderBy:{
+      s:'asc'
+    }
   });
 
   res.status(200).json({
