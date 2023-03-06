@@ -22,7 +22,7 @@ model Timeblock {
   project   Project?  @relation(fields: [projectId], references: [id])
   projectId Int?
   reminder  DateTime?
-  status    Boolean
+  status    String
 }
 
 model Project {
