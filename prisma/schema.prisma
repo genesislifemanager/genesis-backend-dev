@@ -29,11 +29,11 @@ model Project {
   id         Int         @id @default(autoincrement())
   name       String
   timeblocks Timeblock[]
-  duration   Json
+  duration   Json?
   venture    Venture?    @relation(fields: [ventureId], references: [id])
   ventureId  Int?
-  due        DateTime
-  status     String
+  due        DateTime?
+  status     String?
 }
 
 model Venture {
