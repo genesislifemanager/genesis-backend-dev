@@ -101,7 +101,6 @@ export const deleteTimeblockById = async (req: Request, res: Response) => {
 
 export const getTimeBlocksByDate = async (req: Request, res: Response) => {
   const { date } = req.params;
-  console.log(req.query);
   const {status} = req.query as {status:string};
 
 
