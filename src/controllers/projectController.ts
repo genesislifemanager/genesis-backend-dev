@@ -3,7 +3,11 @@ import { prisma } from "../index";
 import dayjs from "dayjs";
 
 export const getAllProjects = async (req: Request, res: Response) => {
-  const projects = await prisma.project.findMany();
+  const projects = await prisma.project.findMany({
+    orderBy:{
+      id: "asc",
+    }
+  });
 
   res.status(200).json({
     status: "success",
@@ -12,7 +16,7 @@ export const getAllProjects = async (req: Request, res: Response) => {
 };
 
 export const createProject = async (req: Request, res: Response) => {
-  const { name, status, due, duration } = req.body;
+  const { name, status, due, duration,ventureId } = req.body;
 
   const newProject = await prisma.project.create({
     data: {
@@ -20,7 +24,7 @@ export const createProject = async (req: Request, res: Response) => {
       duration,
       due: dayjs(due).toDate(),
       status,
-      ventureId:-1,
+      ventureId:ventureId,
     },
   });
   res.status(201).json({
@@ -46,7 +50,7 @@ export const getProjectById = async (req: Request, res: Response) => {
 
 export const updateProjectById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, status, due, duration } = req.body;
+  const { name, status, due, duration,ventureId } = req.body;
 
   const updatedProject = await prisma.project.update({
     where: {
@@ -57,6 +61,7 @@ export const updateProjectById = async (req: Request, res: Response) => {
       duration,
       due: dayjs(due).toDate(),
       status,
+      ventureId:ventureId,
     },
   });
 
@@ -68,6 +73,16 @@ export const updateProjectById = async (req: Request, res: Response) => {
 
 export const deleteProjectById = async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  const timeblocksOfProject = await prisma.timeblock.updateMany({
+    where:{
+      projectId: parseInt(id, 10)
+    },
+    data:{
+      projectId:-1
+    }
+  });
+  
 
   const deletedProject = await prisma.project.delete({
     where: {

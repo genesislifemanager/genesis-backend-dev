@@ -80,6 +80,15 @@ export const updateVentureById = async (req: Request, res: Response) => {
   export const deleteVentureById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
+    const projectsOfVenture = await prisma.project.updateMany({
+      where:{
+        ventureId: parseInt(id, 10)
+      },
+      data:{
+        ventureId:-1
+      }
+    });
+
     const deletedVenture = await prisma.venture.delete({
       where: {
         id: parseInt(id, 10),
