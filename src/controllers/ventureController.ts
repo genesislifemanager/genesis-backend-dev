@@ -7,7 +7,7 @@ export const getAllVentures = async (req: Request, res: Response) => {
 
   const ventures = await prisma.venture.findMany({
     where: {
-      OR: [{ id: -1 }, { uid: user }],
+      uid:user,
     },
     include: {
       projects: {
