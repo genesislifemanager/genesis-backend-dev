@@ -3,7 +3,13 @@ import { prisma } from "../index";
 import dayjs from "dayjs";
 
 export const getAllTimeBlocks = async (req: Request, res: Response) => {
-  const timeblocks = await prisma.timeblock.findMany();
+  const {user} = req.params;
+  
+  const timeblocks = await prisma.timeblock.findMany({
+    where:{
+      uid:user
+    }
+  });  
 
   res.status(200).json({
     status: "success",
@@ -12,13 +18,15 @@ export const getAllTimeBlocks = async (req: Request, res: Response) => {
 };
 
 export const createTimeblock = async (req: Request, res: Response) => {
+  const {user} = req.params;
   const { name, type, mode, s, duration, projectId, reminder } = req.body;
-
+  
   const stime = dayjs(s);
   const etime = stime.add(duration.h, "h").add(duration.m, "m");
 
   const newTimeblock = await prisma.timeblock.create({
     data: {
+      uid:user,
       name: name,
       type: type,
       mode: mode,
@@ -38,13 +46,17 @@ export const createTimeblock = async (req: Request, res: Response) => {
 };
 
 export const getTimeblockById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { user,id } = req.params;
+  
 
   const timeblock = await prisma.timeblock.findFirst({
     where: {
+      uid: user,
       id: parseInt(id, 10),
     },
   });
+  console.log(timeblock);
+  
 
   res.status(200).json({
     status: "success",
@@ -53,16 +65,19 @@ export const getTimeblockById = async (req: Request, res: Response) => {
 };
 
 export const updateTimeblockById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { user,id } = req.params;
 
   const { name, type, mode, s, duration, projectId, reminder,status } = req.body;
 
   const stime = dayjs(s);
   const etime = stime.add(duration.h, "h").add(duration.m, "m");
 
-  const updatedTimeblock = await prisma.timeblock.update({
+  const updatedTimeblock = await prisma.timeblock.updateMany({
     where: {
-      id: parseInt(id, 10),
+      AND:[
+        {uid:user},
+        {id: parseInt(id, 10)},
+      ],
     },
     data: {
       name: name,
@@ -84,12 +99,15 @@ export const updateTimeblockById = async (req: Request, res: Response) => {
 };
 
 export const deleteTimeblockById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { user, id } = req.params;
   
 
-  const deletedTimeblock = await prisma.timeblock.delete({
+  const deletedTimeblock = await prisma.timeblock.deleteMany({
     where: {
-      id: parseInt(id, 10),
+      AND:[
+        {uid:user},
+        {id: parseInt(id, 10)},
+      ],
     },
   });
 
@@ -100,9 +118,10 @@ export const deleteTimeblockById = async (req: Request, res: Response) => {
 };
 
 export const getTimeBlocksByDate = async (req: Request, res: Response) => {
-  const { date } = req.params;
+  const { user,date } = req.params;
+  console.log(req.params);  
+  
   const {status} = req.query as {status:string};
-
 
   const selectedDate = dayjs(JSON.parse(date))
     .hour(0)
@@ -119,11 +138,14 @@ export const getTimeBlocksByDate = async (req: Request, res: Response) => {
         gt: selectedDate.toDate(),
       },
       status: status,
+      uid:user
     },
     orderBy:{
       s:'asc'
     }
   });
+  console.log(timeblocksForDate);
+  
 
   res.status(200).json({
     status: "success",
